@@ -88,13 +88,12 @@ const TweetEditor = () => {
   const fetchTweet = async () => {
     const res = await fetch(`/api/tweet?id=${link.slice(-19)}`);
     const data = await res.json();
-    const tweet = data[0];
 
     setTweet({
-      authorName: tweet.author.name,
-      authorHandle: tweet.author.username,
-      text: tweet.text,
-      avatarUrl: tweet.author.profile_image_url,
+      authorName: data.author.name,
+      authorHandle: data.author.username,
+      text: data.text,
+      avatarUrl: data.author.profile_image_url,
     });
   };
 

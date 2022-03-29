@@ -5,7 +5,7 @@ import "@/styles/global.css";
 const theme = extendTheme({
   config: {
     initialColorMode: "dark",
-    useSystemColorMode: true,
+    useSystemColorMode: false,
   },
   fonts: {
     body: "Inter, system-ui, sans-serif",
