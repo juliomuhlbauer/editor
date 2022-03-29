@@ -1,10 +1,12 @@
-import { TwitterApi } from "twitter-api-v2";
+import { Client } from "twitter-api-sdk";
 
-const token = process.env.TWITTER_BEARER_TOKEN as string;
+const token = process.env.TWITTER_BEARER_TOKEN || "";
 
-const twitterClient = new TwitterApi(token);
+const client = new Client(token);
 
-export const getTweet = async () => {
-  const tweet = twitterClient.v2.singleTweet("1508607411967434757");
+export const getTweet = async (id: string) => {
+  const tweet = await (
+    await client.tweets.findTweetById("1508607411967434757")
+  ).data;
   return tweet;
 };

@@ -18,7 +18,7 @@
     "next": "12.1.1",
     "react": "17.0.2",
     "react-dom": "17.0.2",
-    "twitter-api-v2": "^1.11.2"
+    "twitter-api-sdk": "^1.0.2"
   },
   "devDependencies": {
     "@types/node": "17.0.23",

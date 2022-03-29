@@ -7,7 +7,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { id } = req.query;
 
   const tweets = await getTweets([id.toString()]);
-  //   const tweet = await getTweet();
 
   res.status(200).json(tweets);
 };
