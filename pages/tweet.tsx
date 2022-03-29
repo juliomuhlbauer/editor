@@ -1,3 +1,5 @@
+import { Tweet } from "@/components/tweet";
+import { Format, Theme, TweetProps } from "@/types";
 import {
   AspectRatio,
   Box,
@@ -6,64 +8,17 @@ import {
   FormLabel,
   Heading,
   HStack,
-  Img,
   Input,
   Radio,
   RadioGroup,
   Select,
   Stack,
   Textarea,
-  ThemeTypings,
 } from "@chakra-ui/react";
 import { toPng } from "html-to-image";
 import produce from "immer";
 import Head from "next/head";
-import { FC, Fragment, useCallback, useRef, useState } from "react";
-
-type Theme = "light" | "darkBlue" | "dark";
-
-type Format = "twitter" | "instagram" | "1x1";
-
-type TweetProps = {
-  authorHandle: string;
-  text: string;
-  avatarUrl: string;
-  authorName: string;
-};
-
-interface TweetDisplayProps {
-  tweet: TweetProps;
-  theme: Theme;
-}
-
-const color = (
-  theme: Theme
-): {
-  bg: ThemeTypings["colors"];
-  accent: ThemeTypings["colors"];
-  secondary: ThemeTypings["colors"];
-} => {
-  switch (theme) {
-    case "light":
-      return {
-        bg: "white",
-        accent: "#101419",
-        secondary: "#576370",
-      };
-    case "darkBlue":
-      return {
-        bg: "#1c2732",
-        accent: "#D9D9D9",
-        secondary: "#70757C",
-      };
-    case "dark":
-      return {
-        bg: "#070807",
-        accent: "#D9D9D9",
-        secondary: "#70757C",
-      };
-  }
-};
+import { useCallback, useRef, useState } from "react";
 
 const formatter = (format: Format) => {
   switch (format) {
@@ -96,47 +51,9 @@ const canvas = (format: Format, el: HTMLDivElement) => {
   }
 };
 
-const Tweet: FC<TweetDisplayProps> = ({ theme, tweet }) => {
-  const { accent, bg, secondary } = color(theme);
-
-  return (
-    <Box bgColor={bg}>
-      <Stack p={8} spacing={4} w="100%">
-        <HStack>
-          <Img src={tweet.avatarUrl} borderRadius="full" boxSize="12" />
-          <Box>
-            <Heading
-              lineHeight="shorter"
-              fontWeight="bold"
-              fontSize="xl"
-              textColor={accent}
-            >
-              {tweet.authorName}
-            </Heading>
-            <Heading
-              lineHeight="shorter"
-              fontSize="md"
-              fontWeight="normal"
-              textColor={secondary}
-            >
-              @{tweet.authorHandle}
-            </Heading>
-          </Box>
-        </HStack>
-        <Heading fontSize="xl" fontWeight="medium" textColor={accent}>
-          {tweet.text.split("\n").map((line, i) => (
-            <Fragment key={i}>
-              {line}
-              <br />
-            </Fragment>
-          ))}
-        </Heading>
-      </Stack>
-    </Box>
-  );
-};
-
 const TweetEditor = () => {
+  const [link, setLink] = useState("");
+
   const ref = useRef<HTMLDivElement>(null);
   const [theme, setTheme] = useState<Theme>("darkBlue");
   const [format, setFormat] = useState<Format>("twitter");
@@ -167,6 +84,19 @@ const TweetEditor = () => {
         console.log(err);
       });
   }, [format, ref]);
+
+  const fetchTweet = async () => {
+    const res = await fetch(`/api/tweet?id=${link.slice(-19)}`);
+    const data = await res.json();
+    const tweet = data[0];
+
+    setTweet({
+      authorName: tweet.author.name,
+      authorHandle: tweet.author.username,
+      text: tweet.text,
+      avatarUrl: tweet.author.profile_image_url,
+    });
+  };
 
   return (
     <>
@@ -225,11 +155,20 @@ const TweetEditor = () => {
               <Button alignSelf="start" onClick={onButtonClick}>
                 Download
               </Button>
+              <HStack>
+                <Input value={link} onChange={(e) => setLink(e.target.value)} />
+                <Button
+                  onClick={() => {
+                    fetchTweet();
+                  }}
+                >
+                  Fetch
+                </Button>
+              </HStack>
             </Stack>
           </Stack>
           <Stack spacing={8} w="100%">
             <Heading>Tweet Options</Heading>
-
             <Box>
               <FormLabel>Name</FormLabel>
               <Input
@@ -274,7 +213,6 @@ const TweetEditor = () => {
 
             <Box>
               <FormLabel>Tweet</FormLabel>
-
               <Textarea
                 minH={32}
                 value={tweet.text}
