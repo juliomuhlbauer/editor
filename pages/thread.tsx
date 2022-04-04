@@ -11,7 +11,7 @@ const Thread: FC<{ tweets: TweetProps[] }> = () => {
     const res = await fetch(`/api/thread?id=${link.slice(-19)}`);
     const data = await res.json();
 
-    const thread = data.tweets.map((tweet) => ({
+    const thread = data.tweets.map((tweet: any) => ({
       authorHandle: data.author?.username || "",
       avatarUrl: data.author?.profile_image_url || "",
       authorName: data.author?.name || "",
