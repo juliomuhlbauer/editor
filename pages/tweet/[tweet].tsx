@@ -61,6 +61,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     avatarUrl: data.author?.profile_image_url || "",
     authorName: data.author?.name || "",
     text: data.text,
+    media: [],
   };
 
   return {
