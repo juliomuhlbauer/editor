@@ -63,6 +63,7 @@ const TweetEditor = () => {
     text: "O melhor dia para começar foi ontem, mas o segundo melhor é hoje.\n\nComece a criar consistência hoje para não se arrepender amanhã.",
     avatarUrl:
       "https://pbs.twimg.com/profile_images/1481415043443044360/LG5n1vzt_400x400.jpg",
+    media: [],
   });
 
   const onButtonClick = useCallback(() => {
@@ -89,11 +90,14 @@ const TweetEditor = () => {
     const res = await fetch(`/api/tweet?id=${link.slice(-19)}`);
     const data = await res.json();
 
+    console.log(data);
+
     setTweet({
       authorName: data.author.name,
       authorHandle: data.author.username,
       text: data.text,
       avatarUrl: data.author.profile_image_url,
+      media: data.media,
     });
   };
 

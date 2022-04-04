@@ -48,6 +48,10 @@ export const getTweet = async (id: string) => {
   return {
     ...tweet.data,
     author: getAuthorInfo(tweet.data.author_id),
+    media:
+      tweet.data.attachments?.media_keys?.map((key: any) =>
+        tweet.includes?.media?.find((media: any) => media.media_key === key)
+      ) || [],
   };
 };
 
@@ -99,6 +103,10 @@ export const getTweets = async (ids: string[]) => {
   return tweets.data.map((tweet) => ({
     ...tweet,
     author: getAuthorInfo(tweet.author_id),
+    media:
+      tweet.attachments?.media_keys?.map((key: any) =>
+        tweets.includes?.media?.find((media: any) => media.media_key === key)
+      ) || [],
   }));
 };
 
@@ -155,7 +163,18 @@ export const getThread = async (id: string) => {
   }
 
   return {
-    tweets: [tweet, ...thread.tweets.reverse()],
+    tweets: [
+      tweet,
+      ...thread.tweets.reverse().map((tweet) => ({
+        ...tweet,
+        media:
+          tweet.attachments?.media_keys?.map((key: any) =>
+            thread.includes?.media?.find(
+              (media: any) => media.media_key === key
+            )
+          ) || [],
+      })),
+    ],
     author: tweet.author,
   };
 };

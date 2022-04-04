@@ -6,6 +6,8 @@ import { GetServerSideProps } from "next";
 import { FC } from "react";
 
 const Gallery: FC<{ tweets: TweetProps[] }> = ({ tweets }) => {
+  console.log(tweets);
+
   return (
     <Container>
       {tweets.map((tweet, index) => (
@@ -21,6 +23,7 @@ export default Gallery;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const data = await getTweets([
+    "1509856247478206470",
     "1189444653059174401",
     "935857414435495937",
     "1334528781139259400",
@@ -52,6 +55,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     avatarUrl: tweet.author?.profile_image_url || "",
     authorName: tweet.author?.name || "",
     text: tweet.text,
+    media: tweet.media,
   }));
 
   return {

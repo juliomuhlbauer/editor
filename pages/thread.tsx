@@ -15,6 +15,7 @@ const Thread: FC<{ tweets: TweetProps[] }> = () => {
       authorHandle: data.author?.username || "",
       avatarUrl: data.author?.profile_image_url || "",
       authorName: data.author?.name || "",
+      media: tweet.media,
       ...tweet,
     }));
 

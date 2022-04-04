@@ -1,26 +1,28 @@
 import { Theme, TweetProps } from "@/types";
 import {
   Box,
+  Grid,
   Heading,
   HStack,
   Img,
+  SimpleGrid,
   Stack,
   ThemeTypings,
 } from "@chakra-ui/react";
 import { FC, Fragment } from "react";
 
-interface TweetDisplayProps {
+interface Tweet {
   tweet: TweetProps;
   theme: Theme;
 }
 
-const color = (
-  theme: Theme
-): {
+type TweetTheme = {
   bg: ThemeTypings["colors"];
   accent: ThemeTypings["colors"];
   secondary: ThemeTypings["colors"];
-} => {
+};
+
+const color = (theme: Theme): TweetTheme => {
   switch (theme) {
     case "light":
       return {
@@ -43,8 +45,10 @@ const color = (
   }
 };
 
-export const Tweet: FC<TweetDisplayProps> = ({ theme, tweet }) => {
+export const Tweet: FC<Tweet> = ({ theme, tweet }) => {
   const { accent, bg, secondary } = color(theme);
+
+  const formattedText = tweet.text.replace(/https:\/\/[\n\S]+/g, "");
 
   return (
     <Box bgColor={bg}>
@@ -71,13 +75,25 @@ export const Tweet: FC<TweetDisplayProps> = ({ theme, tweet }) => {
           </Box>
         </HStack>
         <Heading fontSize="xl" fontWeight="medium" textColor={accent}>
-          {tweet.text.split("\n").map((line, i) => (
+          {formattedText.split("\n").map((line, i) => (
             <Fragment key={i}>
               {line}
               <br />
             </Fragment>
           ))}
         </Heading>
+        {tweet.media && tweet.media.length ? (
+          <SimpleGrid
+            // d="inline-grid"
+            columns={tweet.media.length === 1 ? 1 : 2}
+            columnGap={2}
+            my={2}
+          >
+            {tweet.media?.map((media, i) => (
+              <Img key={i} src={media?.url} />
+            ))}
+          </SimpleGrid>
+        ) : null}
       </Stack>
     </Box>
   );
