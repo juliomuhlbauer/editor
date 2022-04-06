@@ -54,15 +54,7 @@ export default TweetGenerator;
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const { id } = context.query;
-  const data = await getTweet("1508213556474482702");
-
-  const tweet: TweetProps = {
-    authorHandle: data.author?.username || "",
-    avatarUrl: data.author?.profile_image_url || "",
-    authorName: data.author?.name || "",
-    text: data.text,
-    media: [],
-  };
+  const tweet = await getTweet("1508213556474482702");
 
   return {
     props: {

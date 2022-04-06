@@ -1,6 +1,6 @@
 import { Tweet } from "@/components/tweet";
 import { TweetProps } from "@/types";
-import { Box, Button, Container, HStack, Input } from "@chakra-ui/react";
+import { Box, Button, Container, HStack, Input, Stack } from "@chakra-ui/react";
 import { FC, useState } from "react";
 
 const Thread: FC<{ tweets: TweetProps[] }> = () => {
@@ -9,36 +9,31 @@ const Thread: FC<{ tweets: TweetProps[] }> = () => {
 
   const fetchTweet = async () => {
     const res = await fetch(`/api/thread?id=${link.slice(-19)}`);
-    const data = await res.json();
-
-    const thread = data.tweets.map((tweet: any) => ({
-      authorHandle: data.author?.username || "",
-      avatarUrl: data.author?.profile_image_url || "",
-      authorName: data.author?.name || "",
-      media: tweet.media,
-      ...tweet,
-    }));
+    const thread = await res.json();
 
     setThread(thread);
   };
 
   return (
-    <Container>
-      <HStack>
-        <Input value={link} onChange={(e) => setLink(e.target.value)} />
-        <Button
-          onClick={() => {
-            fetchTweet();
-          }}
-        >
-          Fetch
-        </Button>
-      </HStack>
-      {thread.map((tweet, index) => (
-        <Box key={index}>
-          <Tweet tweet={tweet} theme="darkBlue" />
-        </Box>
-      ))}
+    <Container py={4}>
+      <Stack>
+        <HStack>
+          <Input value={link} onChange={(e) => setLink(e.target.value)} />
+          <Button
+            onClick={() => {
+              fetchTweet();
+            }}
+          >
+            Fetch
+          </Button>
+        </HStack>
+
+        {thread.map((tweet, index) => (
+          <Box key={index}>
+            <Tweet tweet={tweet} theme="darkBlue" />
+          </Box>
+        ))}
+      </Stack>
     </Container>
   );
 };

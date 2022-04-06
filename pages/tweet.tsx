@@ -58,11 +58,13 @@ const TweetEditor = () => {
   const [theme, setTheme] = useState<Theme>("darkBlue");
   const [format, setFormat] = useState<Format>("twitter");
   const [tweet, setTweet] = useState<TweetProps>({
-    authorName: "Júlio Werner",
-    authorHandle: "julio_werner_",
+    author: {
+      name: "Júlio Werner",
+      username: "julio_werner_",
+      avatarUrl:
+        "https://pbs.twimg.com/profile_images/1481415043443044360/LG5n1vzt_400x400.jpg",
+    },
     text: "O melhor dia para começar foi ontem, mas o segundo melhor é hoje.\n\nComece a criar consistência hoje para não se arrepender amanhã.",
-    avatarUrl:
-      "https://pbs.twimg.com/profile_images/1481415043443044360/LG5n1vzt_400x400.jpg",
     media: [],
   });
 
@@ -88,17 +90,9 @@ const TweetEditor = () => {
 
   const fetchTweet = async () => {
     const res = await fetch(`/api/tweet?id=${link.slice(-19)}`);
-    const data = await res.json();
+    const tweet = await res.json();
 
-    console.log(data);
-
-    setTweet({
-      authorName: data.author.name,
-      authorHandle: data.author.username,
-      text: data.text,
-      avatarUrl: data.author.profile_image_url,
-      media: data.media,
-    });
+    setTweet(tweet);
   };
 
   return (
@@ -175,11 +169,11 @@ const TweetEditor = () => {
             <Box>
               <FormLabel>Name</FormLabel>
               <Input
-                value={tweet.authorName}
+                value={tweet.author.name}
                 onChange={(e) =>
                   setTweet(
                     produce((draft) => {
-                      draft.authorName = e.target.value;
+                      draft.author.name = e.target.value;
                     })
                   )
                 }
@@ -189,11 +183,11 @@ const TweetEditor = () => {
             <Box>
               <FormLabel>Handle</FormLabel>
               <Input
-                value={tweet.authorHandle}
+                value={tweet.author.username}
                 onChange={(e) =>
                   setTweet(
                     produce((draft) => {
-                      draft.authorHandle = e.target.value;
+                      draft.author.username = e.target.value;
                     })
                   )
                 }
@@ -203,11 +197,11 @@ const TweetEditor = () => {
             <Box>
               <FormLabel>Avatar</FormLabel>
               <Input
-                value={tweet.avatarUrl}
+                value={tweet.author.avatarUrl}
                 onChange={(e) =>
                   setTweet(
                     produce((draft) => {
-                      draft.avatarUrl = e.target.value;
+                      draft.author.avatarUrl = e.target.value;
                     })
                   )
                 }
